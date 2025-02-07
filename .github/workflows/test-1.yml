@@ -7,7 +7,31 @@ on:
 
 jobs:
   say-hello:
-    runs-on: ubuntu-latest
+    runs-on: launch-1
     steps:
-      - name: print a message
-        run: echo "Hi Git-Hub Action"
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with: 
+          python-version: '3.12.3'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || echo "No requirements file found"
+
+      - name: Execute the python script
+        run: python3 tar.py
+
+      - name: Capture the output
+        run: python3 tar.py > output.log
+
+      - name: Upload Output
+        uses: actions/upload-artifact@v3
+        with: 
+          name: execution-output
+          path: output.log
+
+
+        
