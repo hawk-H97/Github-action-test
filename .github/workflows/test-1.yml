@@ -66,11 +66,10 @@ jobs:
       - name: Execute the python script
         run: python3 tar.py
 
-      - name: Capture the output
-        run: python3 tar.py > output.log
+      - name: Execute the python script
+        run: python3 tar1.py
 
-      - name: Upload Output
-        uses: actions/upload-artifact@v4
-        with: 
-          name: execution-output
-          path: output.log
+      - name: Execute the python script
+        run: python3 tar2.py
+
+
