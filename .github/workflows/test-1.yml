@@ -47,7 +47,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           
           for file in ${{ steps.git-diff.outputs.files }}; do
-            scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} $file ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:${{ secrets.TARGET_DIR }}/
+            scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $file ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:${{ secrets.TARGET_DIR }}/
           done
 # !='' condition for github action output is not empty
 # scp = securely copy files between local machine to remote machine, it is for ssh
