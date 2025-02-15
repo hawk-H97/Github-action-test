@@ -15,7 +15,7 @@ jobs:
       - name: Identify changed files
         id: git-diff
         run: |
-          echo "Changed files: 
+          echo "Changed files:" 
           if git rev-parse --verify HEAD^ > /dev/null 2>&1; then
             git diff --name-only HEAD^ HEAD
             echo "::set-output name=files::$(git diff --name-only HEAD^ HEAD | tr '\n' ' ')"
