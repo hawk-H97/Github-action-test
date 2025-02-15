@@ -1,2 +1,2 @@
-name = "sing"
+name = "singaram"
 print ("My name is: ", name)
