@@ -35,7 +35,7 @@ jobs:
       - name: Deploy only changed files
         if: steps.git-diff.outputs.files != ''
         run: |
-          for file in ${{ setps.git-diff.outputs.files }}; do
+          for file in ${{ steps.git-diff.outputs.files }}; do
             scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} $file ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:${{ secrets.TARGET_DIR }}/
           done
 # !='' condition for github action output is not empty
