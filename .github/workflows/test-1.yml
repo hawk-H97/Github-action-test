@@ -1,4 +1,4 @@
-name: Hello world in Action
+name: CI/CD Pipeline with Incremental Deployment
 
 on:
   push:
@@ -6,11 +6,47 @@ on:
       - main
 
 jobs:
-  say-hello:
+  deploy:
     runs-on: launch-1
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Identify changed files
+        id: git-diff
+        run: |
+          echo "Changed files: "
+          git diff --name-only HEAD^ HEAD
+          echo "::set-output name=files::$(git diff --name-only HEAD^ HEAD | tr '\n' ' ')"
+# tr = translate
+# \n = new line
+# ' ' = space character
+# main purpose is looping
+
+      - name: Deploy all files (if no changes detected)
+        if: steps.git-diff.outputs.files == ''
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOST_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: ${{ secrets.TARGET_DIR }}
+
+      - name: Deploy only changed files
+        if: steps.git-diff.outputs.files != ''
+        run: |
+          for file in ${{ setps.git-diff.outputs.files }}; do
+            scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} $file ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:${{ secrets.TARGET_DIR }}/
+          done
+# !='' condition for github action output is not empty
+# scp = securely copy files between local machine to remote machine, it is for ssh
+
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
         
       - name: Set up python
         uses: actions/setup-python@v4
@@ -20,7 +56,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt || echo "No requirements file found"
-
       - name: Execute the python script
         run: python3 tar.py
 
@@ -32,6 +67,3 @@ jobs:
         with: 
           name: execution-output
           path: output.log
-
-
-        
