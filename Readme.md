@@ -29,7 +29,7 @@ In the action normally we use runners as ubuntu in github action. If you give as
  String manipulation and collation> 
 
 ## rsync
-* nstall rsync on a system where sudo requires interactive password input, which isn't possible in a non-interactive environment like GitHub Actions.
+* nstall rsync on a system where the sudo requires interactive password input, which isn't possible in a non-interactive environment like GitHub Actions.
 
 apt-get update && 
 apt-get install -y rsync
