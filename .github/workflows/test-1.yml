@@ -42,6 +42,10 @@ jobs:
       - name: Deploy only changed files
         if: steps.git-diff.outputs.files != ''
         run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
           for file in ${{ steps.git-diff.outputs.files }}; do
             scp -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_KEY }} $file ${{ secrets.USERNAME }}@${{ secrets.HOST_DNS }}:${{ secrets.TARGET_DIR }}/
           done
