@@ -19,6 +19,7 @@ jobs:
       - name: Ensure container is running
         run: |
           docker run -d --name test1 --restart=always ubuntu:latest sleep infinity
+        continue-on-error: true
 
       - name: Copy repository files to container
         run: |
