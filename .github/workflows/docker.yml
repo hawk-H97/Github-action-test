@@ -11,48 +11,44 @@ on:
 
 jobs:
   deploy:
-    runs-on: Linux
+    runs-on: launch-2
     steps:
       - name: Checkout code
         uses: action/checkout@v3
 
       - name: Ensure container is running
         run: |
-#check if the container is running
           if [ ! "$(docker ps -q -f name=python-test)" ]; then
-#If not running, check if it exists (stopped)
             if docker ps -aq -f status=exited -f name=python-test; then
               echo "Starting existing container..."
               docker start python-test
             else
-# container does not exist, create a new one
               echo "Creating a new container...."
               docker run -d --name python-test ubuntu:latest
             fi
           else
             echo "Container is already running."
           fi
-        - name: Copy repository files to container
-          run: |
-# Copy the current directory (repository files) into the container
-            docker cp . python-test:/app
-        - name: Install Python and required packages in container
-          run: |
-# Install Python if not already installed (for Ubuntu)
-            docker exec python-test bash -c "apt-get update && apt-get install -y python3 python3-pip"
+      - name: Copy repository files to container
+        run: |
+          docker cp . python-test:/app
+      - name: Install Python and required packages in container
+        run: |
+          docker exec python-test bash -c "apt-get update && apt-get install -y python3 python3-pip"
             
             # Install any Python packages your script might need
             
   
-        - name: Execute Python script and echo the result
-          run: |
-# Execute the Python script in the container
-            RESULT=$(docker exec python-test bash -c "python3 /app/tar.py")
+      - name: Execute Python script and echo the result
+        run: |
+          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar.py")
             
             # Echo the result
-            echo "Script result: $RESULT"
-  
-        - name: Apply changes
-          run: |
-# Execute commands in the container to apply changes
-            docker exec python-test bash -c "cd /app && echo 'New deployment'"
+          echo "Script result: $RESULT"
+          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar1.py")
+          echo "Script result: $RESULT"
+          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar2.py")
+          echo "Script result: $RESULT"
+      - name: Apply changes
+        run: |
+          docker exec python-test bash -c "cd /app && echo 'New deployment'"
