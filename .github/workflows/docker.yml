@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: linux
+    runs-on: Linux
     steps:
       - name: Checkout code
         uses: action/checkout@v3
