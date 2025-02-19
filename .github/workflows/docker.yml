@@ -18,8 +18,10 @@ jobs:
 
       - name: Ensure container is running
         run: |
-          if  docker start test1
-              echo "Starting existing container..."
+          if [ ! "$(docker ps -q -f name=test1)" ]; then
+            if docker ps -aq -f name=test1; then
+               echo "Starting existing container..."
+               docker start test1
             else
               echo "Creating a new container...."
               docker run -d --name test1 ubuntu:latest sleep infinity
@@ -27,6 +29,7 @@ jobs:
           else
             echo "Container is already running."
           fi
+
       - name: Copy repository files to container
         run: |
           docker cp . test1:/app
