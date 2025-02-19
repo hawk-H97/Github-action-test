@@ -3,7 +3,7 @@ name: CI/CD Pipeline with Incremental Deployment
 on:
   push:
     branches:
-      - main
+      - 
 
 jobs:
   deploy:
