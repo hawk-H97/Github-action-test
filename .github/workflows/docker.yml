@@ -24,7 +24,7 @@ jobs:
               docker start test1
             else
               echo "Creating a new container...."
-              docker run -d --name test1 ubuntu:latest
+              docker run -d --name test1 ubuntu:latest sleep infinity
             fi
           else
             echo "Container is already running."
