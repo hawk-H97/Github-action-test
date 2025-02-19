@@ -18,37 +18,37 @@ jobs:
 
       - name: Ensure container is running
         run: |
-          if [ ! "$(docker ps -q -f name=python-test)" ]; then
-            if docker ps -aq -f status=exited -f name=python-test; then
+          if [ ! "$(docker ps -q -f name=test1)" ]; then
+            if docker ps -aq -f status=exited -f name=test1; then
               echo "Starting existing container..."
-              docker start python-test
+              docker start test1
             else
               echo "Creating a new container...."
-              docker run -d --name python-test ubuntu:latest
+              docker run -d --name test1 ubuntu:latest
             fi
           else
             echo "Container is already running."
           fi
       - name: Copy repository files to container
         run: |
-          docker cp . python-test:/app
+          docker cp . test1:/app
       - name: Install Python and required packages in container
         run: |
-          docker exec python-test bash -c "apt-get update && apt-get install -y python3 python3-pip"
+          docker exec test1 bash -c "apt-get update && apt-get install -y python3 python3-pip"
             
             # Install any Python packages your script might need
             
   
       - name: Execute Python script and echo the result
         run: |
-          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar.py")
+          RESULT=$(docker exec test1 bash -c "python3 /app/tar.py")
             
             # Echo the result
           echo "Script result: $RESULT"
-          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar1.py")
+          RESULT=$(docker exec test1 bash -c "python3 /app/tar1.py")
           echo "Script result: $RESULT"
-          RESULT=$(docker exec my-ubuntu-container bash -c "python3 /app/tar2.py")
+          RESULT=$(docker exec test1 bash -c "python3 /app/tar2.py")
           echo "Script result: $RESULT"
       - name: Apply changes
         run: |
-          docker exec python-test bash -c "cd /app && echo 'New deployment'"
+          docker exec test1 bash -c "cd /app && echo 'New deployment'"
